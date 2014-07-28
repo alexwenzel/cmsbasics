@@ -64,6 +64,10 @@ abstract class Resource extends \BaseController {
      */
     public function index()
     {
+        // fire event
+        Event::fire($this->resource_name.'.index');
+
+        // display listing
         return View::make($this->resource_name.'.index', [
             'items'         => $this->_index_items(),
             'resource_name' => $this->resource_name,
@@ -85,6 +89,9 @@ abstract class Resource extends \BaseController {
      */
     public function create()
     {
+        // fire event
+        Event::fire($this->resource_name.'.create');
+
         return View::make($this->resource_name.'.create', [
             'resource_name' => $this->resource_name,
         ]);
@@ -113,7 +120,7 @@ abstract class Resource extends \BaseController {
         $model = $this->dependency->create($data);
 
         // fire event
-        Event::fire($this->resource_name.'.store');
+        Event::fire($this->resource_name.'.store', array($model));
 
         // call to action
         return $this->_store_finished($data, $model);
@@ -169,6 +176,9 @@ abstract class Resource extends \BaseController {
     {
         $item = $this->dependency->findOrFail($id);
 
+        // fire event
+        Event::fire($this->resource_name.'.show', array($item));
+
         return View::make($this->resource_name.'.show', [
             'item' => $item,
         ]);
@@ -182,6 +192,9 @@ abstract class Resource extends \BaseController {
     public function edit($id)
     {
         $item = $this->dependency->findOrFail($id);
+
+        // fire event
+        Event::fire($this->resource_name.'.edit', array($item));
 
         return View::make($this->resource_name.'.edit', [
             'item' => $item,
@@ -215,7 +228,7 @@ abstract class Resource extends \BaseController {
         $model->update($data);
 
         // fire event
-        Event::fire($this->resource_name.'.update');
+        Event::fire($this->resource_name.'.update', array($model));
 
         // call to action
         return $this->_update_finished($data, $model);
