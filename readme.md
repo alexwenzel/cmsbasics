@@ -1,8 +1,32 @@
-# cms basics
+# my cms basics for laravel
+
+A package for Laravel, which I use to build repetitive resource Items.
+
+## Model
+
+Create a model for your new resource item.
+
+The resource model should have a static ``$rules`` property, which contain all resource rules.
+
+````php
+class Post extends \Eloquent {
+
+    protected $table = 'posts';
+    protected $fillable = ['title', 'body'];
+
+    public static $rules = [
+        'title' => 'required',
+        'body' => 'required',
+    ];
+}
+````
 
 ## Controller
 
-Create a new controller:
+Create a new controller by extending the base resource controller. In the constructor you can specify some settings.
+
+* ``dependency`` => your resource item's model
+* ``resource_name`` => the identifier of your resource, the one you use at ``Route::resource()``
 
 ````php
 use Alexwenzel\Cmsbasics\Controllers\Resource;
@@ -13,19 +37,21 @@ class PostsController extends Resource {
     {
         parent::__construct([
             'dependency'    => $model,
-            'resource_name' => 'posts'
+            'resource_name' => 'posts',
         ]);
     }
 }
 ````
 
-Register the controller:
+Then register the controller in your routes.
 
 ````php
 Route::resource('posts', 'PostsController');
 ````
 
 ### Customize behaviour
+
+You cann customize the behaviour of the base resource controller by overriding specific methods
 
 ````php
 protected function _index_items()
@@ -42,7 +68,7 @@ protected function _destroy_finished()
 
 ### Events
 
-The following Events are fired:
+The following Events are fired within the base resource controller:
 
 **index**
 
@@ -94,21 +120,28 @@ Passes the updated resource as the first argument.
 [resource_name].destroy
 ````
 
-## Example Index View
+## View
+
+This package comes with default views for all actions (index, create, show, edit).
+
+If you want to use different views, you can specify the location in your controller constructor.
+
+````php
+class PostsController extends Resource {
+
+    public function __construct(Post $model)
+    {
+        parent::__construct([
+            'dependency'    => $model,
+            'resource_name' => 'posts',
+            'views'         => 'myown.postviews',
+        ]);
+    }
+}
+````
+
+If you want to customize the default views:
 
 ````
-<table>
-@foreach ($items as $item)
-<tr>
-<td>{{ $item->title }}</td>
-<td>{{ $item->body }}</td>
-<td>{{ link_to_action('posts.edit', 'edit', [$item->id]) }}</td>
-<td>
-{{ Form::open(array('route'=>array('posts.destroy', $item->id), 'method'=>'delete')) }}
-<button type="submit" class="btn btn-xs btn-danger">Delete</button>
-{{ Form::close() }}
-</td>
-</tr>
-@endforeach
-</table>
+php artisan view:publish alexwenzel/cmsbasics
 ````

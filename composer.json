@@ -1,6 +1,7 @@
 {
     "name": "alexwenzel/cmsbasics",
-    "description": "",
+    "description": "A package for Laravel, which I use to build repetitive resource Items.",
+    "keywords": ["laravel", "resource controller", "resource item"],
     "authors": [
         {
             "name": "alexwenzel",

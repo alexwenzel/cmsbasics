@@ -24,6 +24,12 @@ abstract class Resource extends \BaseController {
     protected $resource_name;
 
     /**
+     * Location of the used viewfiles
+     * @var string
+     */
+    protected $view_dir;
+
+    /**
      * Constructor
      * @param array $settings
      */
@@ -31,6 +37,7 @@ abstract class Resource extends \BaseController {
     {
         $this->dependency    = $settings['dependency'];
         $this->resource_name = $settings['resource_name'];
+        $this->view_dir      = isset($settings['view_dir']) ? $settings['view_dir'] : 'cmsbasics::resource';
     }
 
     /**
@@ -68,7 +75,7 @@ abstract class Resource extends \BaseController {
         Event::fire($this->resource_name.'.index');
 
         // display listing
-        return View::make($this->resource_name.'.index', [
+        return View::make($this->view_dir.'.index', [
             'items'         => $this->_index_items(),
             'resource_name' => $this->resource_name,
         ]);
@@ -92,8 +99,9 @@ abstract class Resource extends \BaseController {
         // fire event
         Event::fire($this->resource_name.'.create');
 
-        return View::make($this->resource_name.'.create', [
+        return View::make($this->view_dir.'.create', [
             'resource_name' => $this->resource_name,
+            'view_dir'      => $this->view_dir,
         ]);
     }
 
@@ -179,8 +187,10 @@ abstract class Resource extends \BaseController {
         // fire event
         Event::fire($this->resource_name.'.show', array($item));
 
-        return View::make($this->resource_name.'.show', [
-            'item' => $item,
+        return View::make($this->view_dir.'.show', [
+            'item'          => $item,
+            'resource_name' => $this->resource_name,
+            'view_dir'      => $this->view_dir,
         ]);
     }
 
@@ -196,8 +206,10 @@ abstract class Resource extends \BaseController {
         // fire event
         Event::fire($this->resource_name.'.edit', array($item));
 
-        return View::make($this->resource_name.'.edit', [
-            'item' => $item,
+        return View::make($this->view_dir.'.edit', [
+            'item'          => $item,
+            'resource_name' => $this->resource_name,
+            'view_dir'      => $this->view_dir,
         ]);
     }
 

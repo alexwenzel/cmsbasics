@@ -18,7 +18,7 @@ class CmsbasicsServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		$this->package('alexwenzel/cmsbasics');
+		$this->package('alexwenzel/cmsbasics', 'cmsbasics');
 	}
 
 	/**
