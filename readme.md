@@ -11,13 +11,13 @@ The resource model should have a static ``$rules`` property, which contain all r
 ````php
 class Post extends \Eloquent {
 
-    protected $table = 'posts';
-    protected $fillable = ['title', 'body'];
+  protected $table = 'posts';
+  protected $fillable = ['title', 'body'];
 
-    public static $rules = [
-        'title' => 'required',
-        'body' => 'required',
-    ];
+  public static $rules = [
+    'title' => 'required',
+    'body' => 'required',
+  ];
 }
 ````
 
@@ -27,19 +27,21 @@ Create a new controller by extending the base resource controller. In the constr
 
 * ``dependency`` => your resource item's model
 * ``resource_name`` => the identifier of your resource, the one you use at ``Route::resource()``
+* ``view_dir`` => path to the rescource views
 
 ````php
 use Alexwenzel\Cmsbasics\Controllers\Resource;
 
 class PostsController extends Resource {
 
-    public function __construct(Post $model)
-    {
-        parent::__construct([
-            'dependency'    => $model,
-            'resource_name' => 'posts',
-        ]);
-    }
+  public function __construct(Post $model)
+  {
+    parent::__construct([
+      'dependency'    => $model,
+      'resource_name' => 'posts',
+      'view_dir'      => 'path.to.views',
+    ]);
+  }
 }
 ````
 
@@ -123,25 +125,24 @@ Passes the updated resource as the first argument.
 ## View
 
 This package comes with default views for all actions (index, create, show, edit).
+ Publish the package views as a starting point.
 
-If you want to use different views, you can specify the location in your controller constructor.
+````
+php artisan view:publish alexwenzel/cmsbasics
+````
+
+Copy the package views to a new folder and customize them.
 
 ````php
 class PostsController extends Resource {
 
-    public function __construct(Post $model)
-    {
-        parent::__construct([
-            'dependency'    => $model,
-            'resource_name' => 'posts',
-            'views'         => 'myown.postviews',
-        ]);
-    }
+  public function __construct(Post $model)
+  {
+    parent::__construct([
+      'dependency'    => $model,
+      'resource_name' => 'posts',
+      'view_dir'      => 'path.to.views',
+    ]);
+  }
 }
-````
-
-If you want to customize the default views:
-
-````
-php artisan view:publish alexwenzel/cmsbasics
 ````
